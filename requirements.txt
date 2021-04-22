@@ -1,0 +1,12 @@
+
+beautifulsoup4
+base64
+tqdm
+numpy
+string
+unidecode
+unicodedata
+json
+os
+time
+csv
