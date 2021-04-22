@@ -10,7 +10,7 @@ from unicodedata import normalize
 def getSettlement(notice) :
     tb = notice['teiBlob']
     tb_decoded = base64.b64decode(tb).decode('utf8')
-    soup = BeautifulSoup(tb_decoded, "xml")
+    soup = BeautifulSoup(tb_decoded, "html")
     t = soup.find("meeting")
     if t :
         return t
