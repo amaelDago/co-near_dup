@@ -5,7 +5,6 @@ import json
 import pandas as pd
 from utils import checkNotice
 from sklearn.metrics import precision_score, recall_score, f1_score
-import dvc.api
 
 with open("data/database/database.json", "r", encoding="utf8") as f : 
     data = json.load(f)
