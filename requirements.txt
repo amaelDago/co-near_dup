@@ -4,4 +4,6 @@ numpy
 unidecode
 scikit-learn
 pandas
+tqdm
+dvc
 
