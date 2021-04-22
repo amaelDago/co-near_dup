@@ -7,12 +7,8 @@ from utils import checkNotice
 from sklearn.metrics import precision_score, recall_score, f1_score
 import dvc.api
 
-with dvc.api.open(
-        'data/database/database.json',
-        repo='https://github.com/amaelDago/co-near_dup' ) as fd:
-
-        temp = fd.read()
-        data = json.loads(temp)
+with open("data/database/database.json", "r", encoding="utf8") as f : 
+    data = json.load(f)
 
 df = pd.DataFrame(data.values())
 
