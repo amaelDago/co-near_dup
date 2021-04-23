@@ -25,6 +25,6 @@ jobs:
       - name: test_function 
         run : |
           pip install pytest
-          python test.py
+          python test/test.py
         
 
