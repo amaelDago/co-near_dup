@@ -22,3 +22,9 @@ jobs:
           #cml-publish residuals.png --md >> report.md
           
           cml-send-comment report.md
+      - name: test_function 
+        run : |
+          pip install pytest
+          python test.py
+        
+
