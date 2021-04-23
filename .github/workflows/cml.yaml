@@ -25,6 +25,8 @@ jobs:
       - name: test_function 
         run : |
           pip install pytest
-          python test.py
+          pip install pytest-cov
+          pytest test.py --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+          #python test.py
         
 
