@@ -15,6 +15,9 @@ def test_checkPR() :
     assert checkPR("1544-1549", "1544-549") == 1
     assert checkPR("1544-1550", "1544") == 1
     assert checkPR("1544-1550", "1550") == 1
+    assert checkPR("1544-1550", "1551") == 0
+    assert checkPR("1544-1546", "1544-15446") == 0
+    assert checkPR("1544-1550", "154") == 0
 
 
 def test_levenshtein_distance() : 
