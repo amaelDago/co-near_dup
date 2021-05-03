@@ -15,3 +15,6 @@ coef_dict = {
     "eissn" : 1,
     "publi_date" : 1
 }
+
+
+ratio = 0.75
