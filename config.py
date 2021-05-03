@@ -13,7 +13,8 @@ coef_dict = {
     "nnt" : 1,
     "issn" : 1,
     "eissn" : 1,
-    "publi_date" : 1
+    "publi_date" : 1, 
+    "volume" : 1
 }
 
 

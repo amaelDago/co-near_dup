@@ -5,12 +5,9 @@ import numpy as np
 import string
 import unidecode
 from unicodedata import normalize
-from config import coef_dict
-
-
-###################################
-
-# Create a class for get notice needed fields
+from config import coef_dict, ratio
+import json
+from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix
 
 class Notice : 
     def __init__(self, notice) : 
@@ -27,15 +24,13 @@ class Notice :
         self.eissn = notice["eissn"] if "eissn" in notice else None
         self.nnt = notice["nnt"] if "nnt" in notice else None
         self.settlement = getSettlement(notice["teiBlob"]) if "teiBlob" in notice else None
-        self.pii = notice["pii"] if "pii" in notice else None
         self.volume = notice["volume"] if "volume" in notice else None
         self.type_conditor = notice["typeConditor"] if "typeConditor" in notice else None
-        # if settlement : 
-        #     self.begin_date = settlement.find("date",attrs={"type" : "start"}).text
-        #     self.end_date = settlement.find("date",attrs={"type" : "end"}).text
-        #     self.settlement = settlement.find("settlement").text
-        
-
+        self.sourceUid = notice['sourceUid'] if "sourceUid" in notice else None
+        #if self.settlement : 
+        #    self.begin_date = self.settlement.find("date",attrs={"type" : "start"}).text
+        #    self.end_date = self.settlement.find("date",attrs={"type" : "end"}).text
+        #    self.settlement = self.settlement.find("settlement").text 
 
 
 # Def settlement
@@ -85,7 +80,7 @@ def levenshtein_distance(word1, word2) :
                 cost = 0
             else : 
                 cost = 1
-            
+
             arr[i,j] = min(arr[i-1,j]+1, arr[i, j-1]+1, arr[i-1, j-1] + cost)
             
             # Word -1 because python count begin by 0
@@ -246,12 +241,12 @@ def compare_publi_date(pd1, pd2, coef = 1) :
 
 def compare_page_range(page_range1, page_range2, coef = 1) : 
 
-    if not isinstance(page_range1, str) or isinstance(page_range2, str) : 
-        return [0.1*coef, 1]
-    elif page_range1 == "np" or page_range2 == "np" : 
-        return [0.1*coef, 1]
-    else :  
-        return checkPR(page_range1, page_range2)
+    # if not isinstance(page_range1, str) or isinstance(page_range2, str) : 
+    #     return [0.1*coef, 1]
+    # elif page_range1 == "np" or page_range2 == "np" : 
+    #     return [0.1*coef, 1]
+    # else :  
+    return checkPR(page_range1, page_range2)
 
 def compare_issue(issue1, issue2, coef = 1) : 
 
@@ -276,8 +271,8 @@ def compare_source(source1, source2, coef = 1) :
 
 def compare_meeting(meeting1, meeting2, coef = 1) : 
     return check(meeting1, meeting2, coef) 
-    #meeting1 = notice1['title']['meeting']
-    #meeting2 = notice2['title']['meeting']
+    # meeting1 = notice1['title']['meeting']
+    # meeting2 = notice2['title']['meeting']
 
     # if not meeting1 or not meeting2 : 
     #     return [0.1*coef,1]
@@ -311,31 +306,47 @@ def compare_nnt(nnt1, nnt2, coef = 1):
     return check(nnt1,nnt2, coef)
 
 def compare_settlement(settlement1,settlement2, coef = 1) :
-    if not settlement1 or not settlement2 : 
-        return [0.1*coef, 1]
+    
+    if not (settlement1 and settlement2) :
+        return [0.1, 1]
+
     else : 
         try : 
             begin_date1 = settlement1.find("date",attrs={"type" : "start"}).text
-            end_date1 = settlement1.find("date",attrs={"type" : "end"}).text
-            settlement1 = settlement1.find("settlement").text
-            
             begin_date2 = settlement2.find("date",attrs={"type" : "start"}).text
-            end_date2 = settlement2.find("date",attrs={"type" : "end"}).text
-            settlement2 = settlement2.find("settlement").text
+        except :
+             begin_date1 = None
+             begin_date2 = None
 
-            if (begin_date1 == begin_date2) and (end_date1 == end_date2) :
-                return [0.9*coef,1]
-            else : 
-                if settlement1 == settlement2 : 
-                    return [0.9*coef, 1]
-                else : 
-                    return [0.9*coef, -1]
+        try : 
+            end_date1 = settlement1.find("date",attrs={"type" : "end"}).text
+            end_date2 = settlement2.find("date",attrs={"type" : "end"}).text
         except : 
+            end_date1 = None
+            end_date2 = None
+
+        try : 
+            settlement1 = settlement1.find("settlement").text
+            settlement2 = settlement2.find("settlement").text
+        except : 
+            settlement1 = None
+            settlement2 = None
+
+        if begin_date1 and begin_date2 : 
+            return check(begin_date1, begin_date2)
+
+        elif settlement1 and settlement2 : 
+            return check(settlement1, settlement2)
+
+        elif end_date1 and end_date2 : 
+            return check(end_date1, end_date2)
+
+        else : 
             return [0.1*coef, 1]
 
 def compare_default_title(td1, td2, threshold = .2) : 
-    x1,x2 = str(td1), str(td2)
-    dist = sentenceDistance(td1,td2)
+
+    dist = sentenceDistance(str(td1), str(td2))
     if dist > threshold : 
         return [0.9, -1]
     else : 
@@ -345,13 +356,13 @@ def compare_default_title(td1, td2, threshold = .2) :
 #####################################
 
 # Compute matching function
+#n1 = Notice(notice1)
+#n2 = Notice(notice2)
 
-def compare_notice(notice1, notice2, coef_dict = coef_dict, threshold = 0.2) : 
+
+def compare_notice(n1, n2, coef_dict = coef_dict, threshold = 0.2) : 
 
     # Recuperer les champs utiles
-    n1 = Notice(notice1)
-    n2 = Notice(notice2)
-    ratio = 3/4
     dico = {}
 
     # titledefault
@@ -383,10 +394,16 @@ def compare_notice(notice1, notice2, coef_dict = coef_dict, threshold = 0.2) :
         #dico["journal"] = compare_journal(n1.journal, n2.journal, coef_dict["journal"])
         
         # settlement
-        dico["settlement"] = compare_settlement(n1.settlement, n2.settlement, coef_dict["settlement"])
-        
+        dico["settlement"] = compare_settlement(n1.settlement, n2.settlement,coef_dict["settlement"])
+
         # issue
         dico["issue"] = compare_issue(n1.issue, n2.issue, coef_dict["issue"])
+
+        # volume
+        dico["volume"] = compare_issue(n1.volume, n2.volume, coef_dict["volume"])
+
+        # volume
+        #dico[""]
 
     
     # DocumentType
@@ -396,101 +413,115 @@ def compare_notice(notice1, notice2, coef_dict = coef_dict, threshold = 0.2) :
         # page_range
         dico["page_range"] = compare_page_range(n1.page_range, n2.page_range, coef_dict["page_range"])
 
-    lentgh = len(dico)
-    # publi_date
-    #dico["publi_date"] = compare_publi_date(n1.publi_date, n2.publi_date, coef_dict["publi_date"])
-
-    # source
-    #dico["source"] = compare_source(n1.source, n2.source, coef_dict["source"])
-    #return dico
-
-    count_dup = 0
-    count_not_dup = 0
-    count_near_dup = 0
+    return dico
     
-    for key, value in dico.items() :
-        if value == [0.9, 1] :
-            count_dup+=1
+    
+def get_validation(dico, ratio = ratio) : # publi_date
+    try : 
 
-        elif value == [0.1,1] : 
-            count_near_dup += 1 
-
-        else :  
-            count_not_dup += 1 
-    #return count_dup, count_near_dup, count_not_dup
+        length = len(dico)
+        count_dup = 0
+        count_not_dup = 0
+        count_near_dup = 0
         
-    if count_not_dup > 0 : 
-        return 0
+        for _, value in dico.items() :
+            if value == [0.9, 1] :
+                count_dup+=1
 
-    elif count_near_dup >= int(lentgh*ratio) : 
-        return 0
+            elif value == [0.1,1] : 
+                count_near_dup += 1 
 
-    else : 
-        return 1
+            else :  
+                count_not_dup += 1 
+            
+        if count_not_dup > 0 : 
+            return 0
 
-        
-    # return dico
-    # notice_keys = notice1.__dict__.keys()
-    # near_count = 0
+        elif count_near_dup >= int(length*ratio) : 
+            return 0
 
-    # if dico['default_title'] > threshold : 
-    #     return 0, coef_dict["default_title"] # Prob
+        else : 
+            return 1
 
-    # source1, source2, source_value, source_label = dico.source
-
-    # if source1 == source2 and source1 != "sudoc" : 
-    #     if dico.doi == [0.9, 1] and dico.settlement == [0.9,1] and \
-    #         dico.eissn == [0.9, 1] and dico.issn == [0.9,1]: 
-    #         return 1#, coef_dict["doi"]*coef_dict["source"] 
-
-    #     elif dico.doi == [0.9, 1] and dico.settlement == [0.1,1] : 
-    #         if (dico.page_range == [0.9,1]) and\
-    #             (dico.issue) == [0.9,1]) and \
-    #             (dico.volume == [0.9, 1]) : 
-    #             return 1#, prob
-    #         else : 
-    #             return 0 # Or return 1 with low prob ([0.1,1])
-
-    #     elif dico.doi != [0.9,1] : 
-    #         if dico.settlement == [0.9,1] and \
-    #             dico.issue == [0.9,1] and \
-    #             dico.volume == [0.9,1] and 
-    #             dico.page_range == [0.9, 1] : 
-    #             return 1
-    #         else : 
-    #             return 0
+    except : 
+        return 0 
 
 
+###############################################
 
+# Class for compute comparison
 
-    # if x>threshold : 
-        # return 0
-    # else : 
-        # source1,source2, value = checkSource(notice1, notice2)
-        # doi = checkDoi(notice1, notice2)
-        # meeting = checkMeeting(notice1, notice2)
-        # #journal = checkJournal(notice1, notice2)
-        # settlement = checkSettlement(notice1, notice2)
-        # pd = checkPublicationDate(notice1, notice2)
-        # dp = checkDocumentType(notice1, notice2)
-        # pr = checkPageRange(notice1, notice2)
-        # issue = checkIssue(notice1, notice2)
+def get_notice_from_sourceUid(sourceUid, df): 
+    if not isinstance(sourceUid, str) : 
+        sourceUid = str(sourceUid)
+    n_serie = df[df.sourceUid == sourceUid]
+    t = n_serie.T.to_json()
+    t_json = list(json.loads(t).values())[0]
+    return t_json
 
-    # #if source1 != source2 : 
-        # if doi == 1 : 
-            # if meeting >= 0 and settlement >= 0 : 
-                # return 1
-            # else : 
-                # return 0
+class NoticeComparison : 
 
-        # elif doi == 0 : 
-            # if (meeting and settlement and dp and issue)>=0 and pd==1 :
-                # return 1
-            # else :      
-                # return 0
+    def __init__(self, list_of_sourceUid1, list_of_sourceUid2, df, ratio) : 
+        self.list_of_sourceUid1 = list_of_sourceUid1
+        self.list_of_sourceUid2 = list_of_sourceUid2
+        self.ratio = ratio
+        self.df = df
+        self.dataframe = []
+        self.file = []
 
-        # else :
-            # if (meeting and settlement and pd and pr and dp and issue) == 1 :
-                # return 1
-            # else :      
-                # return 0
+    def compare_notice(self) : 
+        for x,y in zip(self.list_of_sourceUid1, self.list_of_sourceUid2) : 
+            temp1 = self.Record(get_notice_from_sourceUid(x, self.df))
+            temp2 = self.Record(get_notice_from_sourceUid(y, self.df))
+            dictionary = compare_notice(temp1, temp2)
+            result = get_validation(dictionary, self.ratio)
+            self.dataframe.append(result)
+            self.file.append((x, y, result))
+
+    def is_done(self) : 
+        if len(self.dataframe) == len(self.list_of_sourceUid1) : 
+            return True
+        else : 
+            return False
+
+    def get_stats(self, y) :
+        try :
+            if self.is_done() == True :  
+                prec = precision_score(y, self.dataframe)
+                recall = recall_score(y, self.dataframe)
+                f1 = f1_score(y, self.dataframe)
+                conf = confusion_matrix(y, self.dataframe)
+                return {"Precision": prec, 
+                        "Recall" : recall,
+                        "f1_score" : f1,
+                        "confusion_matrix" : conf
+                }
+
+        except ValueError as err : 
+            return err 
+
+            
+    class Record(Notice) : 
+        pass
+        #def __init__(self, notice) : 
+        #    self.doi = notice["doi"] if "doi" in notice else None
+        #    self.default_title = notice["title"]['default'] if "title" in notice else None
+        #    self.meeting = notice["title"]["meeting"] if "title" in notice else None
+        #    self.journal = notice["title"]["journal"] if "title" in notice else None
+        #    self.publi_date = notice["publicationDate"] if "publicationDate" in notice else None
+        #    self.page_range = notice["pageRange"] if "pageRange" in notice else None
+        #    self.issue = notice["issue"] if "issue" in notice else None
+        #    self.source = notice["source"] if "source" in notice else None
+        #    self.doc_type = notice["documentType"][0] if "documentType" in notice else None
+        #    self.issn = notice["issn"] if "issn" in notice else None
+        #    self.eissn = notice["eissn"] if "eissn" in notice else None
+        #    self.nnt = notice["nnt"] if "nnt" in notice else None
+        #    self.settlement = getSettlement(notice["teiBlob"]) if "teiBlob" in notice else None
+        #    self.pii = notice["pii"] if "pii" in notice else None
+        #    self.volume = notice["volume"] if "volume" in notice else None
+        #    self.type_conditor = notice["typeConditor"] if "typeConditor" in notice else None
+        #   self.sourceUid = notice['sourceUid'] if "sourceUid" in notice else None
+            #if self.settlement : 
+            #    self.begin_date = self.settlement.find("date",attrs={"type" : "start"}).text
+            #    self.end_date = self.settlement.find("date",attrs={"type" : "end"}).text
+            #    self.settlement = self.settlement.find("settlement").text 
