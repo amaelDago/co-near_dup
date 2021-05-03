@@ -4,3 +4,4 @@ unidecode
 scikit-learn
 pandas
 tqdm
+lxml
