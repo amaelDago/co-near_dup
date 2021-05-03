@@ -27,4 +27,4 @@ for file in files :
 
 dd = pd.DataFrame(stats)
 print(dd.head())
-dd.to_csv('result.tsv', sep = "\t")
+dd.to_csv('resultats.tsv', sep = "\t")
