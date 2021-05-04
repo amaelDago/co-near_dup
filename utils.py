@@ -23,6 +23,7 @@ class Notice :
         self.issn = notice["issn"] if "issn" in notice else None
         self.eissn = notice["eissn"] if "eissn" in notice else None
         self.nnt = notice["nnt"] if "nnt" in notice else None
+        self.ppn = notice["ppn"] if "ppn" in notice else None
         self.settlement = getSettlement(notice["teiBlob"]) if "teiBlob" in notice else None
         self.volume = notice["volume"] if "volume" in notice else None
         self.type_conditor = notice["typeConditor"] if "typeConditor" in notice else None
@@ -271,26 +272,9 @@ def compare_source(source1, source2, coef = 1) :
 
 def compare_meeting(meeting1, meeting2, coef = 1) : 
     return check(meeting1, meeting2, coef) 
-    # meeting1 = notice1['title']['meeting']
-    # meeting2 = notice2['title']['meeting']
-
-    # if not meeting1 or not meeting2 : 
-    #     return [0.1*coef,1]
-    # else : 
-    #     if meeting1 == meeting2: 
-    #         return [0.9*coef, 1]
-    #     else : 
-    #         return [0.9*coef, -1]
 
 def compare_doc_type(doc_type1, doc_type2, coef = 1) : 
     return check(doc_type1, doc_type2, coef)
-    #if not doc_type1 or not doc_type1 : 
-    #    return 0
-    #else : 
-    #    if dt1 == dt1: 
-    #        return 1
-    #    else : 
-    #        return -1
 
 def compare_issn(issn1, issn2, coef = 1) : 
     return check(issn1, issn2, coef)
@@ -304,6 +288,13 @@ def compare_journal(journal1, journal2, coef = 1) :
 
 def compare_nnt(nnt1, nnt2, coef = 1): 
     return check(nnt1,nnt2, coef)
+
+def compare_ppn(ppn1, ppn2, coef = 1): 
+    return check(ppn1,ppn2, coef)
+
+def compare_volume(volume1, volume2, coef = 1): 
+    return check(volume1,volume2, coef)
+
 
 def compare_settlement(settlement1,settlement2, coef = 1) :
     
@@ -367,14 +358,16 @@ def compare_notice(n1, n2, coef_dict = coef_dict, threshold = 0.2) :
 
     # titledefault
     dico["default_title"] = compare_default_title(n1.default_title,\
-         n2.default_title, coef_dict['default_title'])
-       
+         n2.default_title, coef_dict['default_title'])       
 
     # source: sudoc
     if n1.source == "sudoc" or n2.source == "sudoc": 
         
         # nnt
         dico["nnt"] = compare_issue(n1.nnt, n2.nnt, coef_dict["nnt"])
+        
+        # publi_date
+        dico["publi_date"] = compare_publi_date(n1.publi_date, n2.publi_date, coef_dict['publi_date'])
 
     
     else :
@@ -387,29 +380,18 @@ def compare_notice(n1, n2, coef_dict = coef_dict, threshold = 0.2) :
         # eissn
         dico["issn"] = compare_issn(n1.issn, n2.issn, coef_dict["issn"])
 
-        # meeting
-        dico["meeting"] = compare_meeting(n1.meeting, n2.meeting, coef_dict["meeting"])
-
-        # journal
-        #dico["journal"] = compare_journal(n1.journal, n2.journal, coef_dict["journal"])
-        
         # settlement
         dico["settlement"] = compare_settlement(n1.settlement, n2.settlement,coef_dict["settlement"])
+
+        # meeting
+        dico["meeting"] = compare_meeting(n1.meeting, n2.meeting, coef_dict["meeting"])
 
         # issue
         dico["issue"] = compare_issue(n1.issue, n2.issue, coef_dict["issue"])
 
         # volume
-        dico["volume"] = compare_issue(n1.volume, n2.volume, coef_dict["volume"])
+        dico["volume"] = compare_volume(n1.volume, n2.volume, coef_dict["volume"])
 
-        # volume
-        #dico[""]
-
-    
-    # DocumentType
-    #dico["DocumentType"] = compare_doc_type(n1.doc_type,\
-         #n2.doc_type, coef_dict["doc_type"])
-    
         # page_range
         dico["page_range"] = compare_page_range(n1.page_range, n2.page_range, coef_dict["page_range"])
 
@@ -467,7 +449,7 @@ class NoticeComparison :
         self.ratio = ratio
         self.df = df
         self.dataframe = []
-        self.file = []
+        self.validation = []
 
     def compare_notice(self) : 
         for x,y in zip(self.list_of_sourceUid1, self.list_of_sourceUid2) : 
@@ -476,7 +458,7 @@ class NoticeComparison :
             dictionary = compare_notice(temp1, temp2)
             result = get_validation(dictionary, self.ratio)
             self.dataframe.append(result)
-            self.file.append((x, y, result))
+            self.validation.append((x, y, result))
 
     def is_done(self) : 
         if len(self.dataframe) == len(self.list_of_sourceUid1) : 
@@ -491,37 +473,16 @@ class NoticeComparison :
                 recall = recall_score(y, self.dataframe)
                 f1 = f1_score(y, self.dataframe)
                 conf = confusion_matrix(y, self.dataframe)
-                return {"Precision": prec, 
-                        "Recall" : recall,
-                        "f1_score" : f1,
+                return {"Precision": round(prec,3), 
+                        "Recall" : round(recall,3),
+                        "f1_score" : round(f1,3),
                         "confusion_matrix" : conf
                 }
 
-        except ValueError as err : 
+        except Exception as err : 
             return err 
 
             
     class Record(Notice) : 
         pass
-        #def __init__(self, notice) : 
-        #    self.doi = notice["doi"] if "doi" in notice else None
-        #    self.default_title = notice["title"]['default'] if "title" in notice else None
-        #    self.meeting = notice["title"]["meeting"] if "title" in notice else None
-        #    self.journal = notice["title"]["journal"] if "title" in notice else None
-        #    self.publi_date = notice["publicationDate"] if "publicationDate" in notice else None
-        #    self.page_range = notice["pageRange"] if "pageRange" in notice else None
-        #    self.issue = notice["issue"] if "issue" in notice else None
-        #    self.source = notice["source"] if "source" in notice else None
-        #    self.doc_type = notice["documentType"][0] if "documentType" in notice else None
-        #    self.issn = notice["issn"] if "issn" in notice else None
-        #    self.eissn = notice["eissn"] if "eissn" in notice else None
-        #    self.nnt = notice["nnt"] if "nnt" in notice else None
-        #    self.settlement = getSettlement(notice["teiBlob"]) if "teiBlob" in notice else None
-        #    self.pii = notice["pii"] if "pii" in notice else None
-        #    self.volume = notice["volume"] if "volume" in notice else None
-        #    self.type_conditor = notice["typeConditor"] if "typeConditor" in notice else None
-        #   self.sourceUid = notice['sourceUid'] if "sourceUid" in notice else None
-            #if self.settlement : 
-            #    self.begin_date = self.settlement.find("date",attrs={"type" : "start"}).text
-            #    self.end_date = self.settlement.find("date",attrs={"type" : "end"}).text
-            #    self.settlement = self.settlement.find("settlement").text 
+        

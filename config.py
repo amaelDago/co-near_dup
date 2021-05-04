@@ -14,8 +14,9 @@ coef_dict = {
     "issn" : 1,
     "eissn" : 1,
     "publi_date" : 1, 
-    "volume" : 1
+    "volume" : 1,
+    "ppn" : 1
 }
 
 
-ratio = 0.75
+ratio = 0.85
