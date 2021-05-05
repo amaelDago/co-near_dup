@@ -17,20 +17,18 @@ notice = test[0]
 notice_test = Notice(notice)
 
 #class TestNotice(unittest.TestCase) : 
-def test_checkPR() : 
-    assert checkPR("1444-1449", "1444-9") == [0.9, 1]
-    assert checkPR("1544-1550", "1544-50")==  [0.9, 1]
-    assert checkPR("1544-1549", "1544-549") == [0.9, 1]
-    assert checkPR("1544-1550", "1544") == [0.9, 1]
-    assert checkPR("1544-1550", "1550") == [0.9, 1]
-    assert checkPR("1544-1550", "1551") == [0.9, -1]
-    #assert checkPR("1544-1546", "1544-15446") == -1
-    #assert checkPR("1544-1550", "154") == -1
-    assert checkPR("1544-1550", "155") == [0.9, -1]
-    assert checkPR("1544-1550", None) == [0.1, 1]
-    assert checkPR(None, None) == [0.1, 1]
-
-
+def test_check_page_range() : 
+    assert check_page_range("1444-1449", "1444-9") == 1
+    assert check_page_range("1544-1550", "1544-50") ==  1
+    assert check_page_range("1544-1549", "1544-549") == 1
+    assert check_page_range("1544-1550", "1544") == 1
+    assert check_page_range("1544-1550", "1550") == -1 # but to check
+    assert check_page_range("1544-1550", "1551") == -1
+    assert check_page_range("1544-1546", "1544-15447") == -1
+    assert check_page_range("1544-1550", "154") == -1
+    assert check_page_range("1544-1550", "155") == -1
+    assert check_page_range("1544-1550", None) == 0
+    assert check_page_range(None, None) == 0
 
 
 def test_compare_doi() : 
@@ -61,13 +59,19 @@ def test_levenshtein_distance() :
 
 
 def test_check() :
-    assert check(['2012/10/12'], ['2012/10/12']) == [0.9, 1]
-    assert check(['2012/10/12'], ['2012']) == [0.9, 1]
-    assert check(['2012'], ['2012/10/12']) == [0.9, 1]
-    assert check('2012/10/12', None) == [0.1, 1]
-    assert check(None, ['2012/10/12']) == [0.1, 1]
-    assert check(None, None) 
-    assert check('2012/10/12', "") == [0.1,1]
+    assert check(['2012/10/12'], ['2012/10/12']) == 1
+    assert check(['2012/10/12'], ['2012']) == 1
+    assert check(['2012'], ['2012/10/12']) == 1
+    assert check('2012/10/12', None) == 0
+    assert check(None, ['2012/10/12']) == 0
+    assert check(None, None) == 0
+    assert check('2012/10/12', "") == 0
+    assert check(1,0) == -1
+    assert check(float("nan"), 0.555) == 0
+    assert check("", "") == 0
+    assert check("this is a test", "a test") == 1
+    assert check("this is a test", "that is a test") == -1
+    assert check(0.755, 0.7776) == -1
 
 def test_compare_source() : 
     source1 = notice_test.source
@@ -83,11 +87,11 @@ def test_compare_source() :
 def test_compare_issue():
     issue1 = 10
     issue2 = issue1
-    assert compare_issue(issue1, issue2) == [0.9,1]
-    assert compare_issue(issue1, None) == [0.1,1]
-    assert compare_issue(None, issue2) == [0.1,1]
-    assert compare_issue(None, None) == [0.1,1]
-    assert compare_issue(issue1, 100) == [0.9,-1]    
+    assert compare_issue(issue1, issue2) == 1
+    assert compare_issue(issue1, None) == 0
+    assert compare_issue(None, issue2) == 0
+    assert compare_issue(None, None) == 0
+    assert compare_issue(issue1, 100) == -1    
 
 
 def test_compare_meeting():
@@ -103,20 +107,20 @@ def test_compare_meeting():
 def test_compare_doc_type():
     doc_type1 = notice_test.doc_type
     doc_type2 = doc_type1
-    assert compare_doc_type(doc_type1, doc_type2) == [0.9,1]
-    assert compare_doc_type(doc_type1, None) == [0.1,1]
-    assert compare_doc_type(None, doc_type2) == [0.1,1]
-    assert compare_doc_type(None, None) == [0.1,1]
-    assert compare_doc_type(doc_type1, "") == [0.1,1] 
+    assert compare_doc_type(doc_type1, doc_type2) == 1
+    assert compare_doc_type(doc_type1, None) == 0
+    assert compare_doc_type(None, doc_type2) == 0
+    assert compare_doc_type(None, None) == 0
+    assert compare_doc_type(doc_type1, "") == 0
 
 def test_compare_settlement(): 
     settlement1 = notice_test.settlement
     settlement2 = settlement1
-    assert compare_settlement(settlement1, settlement2) == [0.9,1]
-    assert compare_settlement(settlement1, None) == [0.1,1]
-    assert compare_settlement(None, settlement2) == [0.1,1]
-    assert compare_settlement(None, None) == [0.1,1]
-    assert compare_settlement(settlement1, "") == [0.1,1]
+    assert compare_settlement(settlement1, settlement2) == 1
+    assert compare_settlement(settlement1, None) == 0
+    assert compare_settlement(None, settlement2) == 0
+    assert compare_settlement(None, None) == 0
+    assert compare_settlement(settlement1, "") == 0
     #assert compare_meeting(settlement1, "unknown") == [0.1,1]
 
 def test_compare_issn() :
