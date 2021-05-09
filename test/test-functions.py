@@ -150,6 +150,59 @@ def test_compare_meeting() :
 #     assert compare_notice(notice_test, n3)[1] == 0
 
 
+#################################################
+
+# Validity and checkpoint test
+
+#################################################
+from functions import is_id_valid
+
+
+class test_is_id_valid() : 
+    notice_bis  = Notice(notice)
+
+    notice_bis2 = Notice(notice)
+    notice_bis2.nnt = "autre-nnt-inconnu"
+
+    assert is_id_valid(notice_test, notice_test) == 1
+
+    notice_bis.doi = "autre-doi-inconnu"
+
+    assert is_id_valid(notice_test, notice_bis) == -1
+
+    notice_bis.doi = ""
+    assert is_id_valid(notice_test, notice_bis) == 0
+    
+    notice_bis.doi = None
+    assert is_id_valid(notice_test, notice_bis) == 0
+
+class test_is_page_range_valid(n1, n2) : 
+    assert isinstance(n1, Notice) == 1
+    assert isinstance(n2, Notice) == 1
+
+    # assert is_page_range_valid("1444-1449", "1444-9") == 1
+    # assert is_page_range_valid("1544-1550", "1544-50") ==  1
+    # assert is_page_range_valid("1544-1549", "1544-549") == 1
+    # assert is_page_range_valid("1544-1550", "1544") == 1
+    # assert is_page_range_valid("1544-1550", "1550") == -1 # but to check
+    # assert is_page_range_valid("1544-1550", "1551") == -1
+    # assert is_page_range_valid("1544-1546", "1544-15447") == -1
+    # assert is_page_range_valid("1544-1550", "154") == -1
+    # assert is_page_range_valid("1544-1550", "155") == -1
+    # assert is_page_range_valid("1544-1550", None) == 0
+    # assert is_page_range_valid(None, None) == 0
+
+class test_is_container_valid() : 
+    pass
+
+class test_is_volume() : 
+    pass
+
+class test_is_content_valid() : 
+    pass
+
+#
+
 
 
 

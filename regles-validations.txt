@@ -1,0 +1,30 @@
+checkpoint1 page_range: 
+ recall = id
+ if id == 0 : and pr == -1 => -1
+ if id == 0 and pr == 0 => 0
+ if id == 0 and pr == 1 ==> 1 #
+ 
+ if id == -1 : and pr == -1 => -1
+ if id == -1 and pr == 0 => -1
+ if id == -1 and pr == 1 ==> 1 #
+ 
+ if id == 1 : and pr == -1 => -1
+ if id == 1 and pr == 0 => 1 #
+ if id == 1 and pr == 1 ==> 1 #
+ 
+ checkpoint2 volumaison
+ recall : cp1
+ cp1 == 1 volumaison == 1 => 1   #
+ cp1 == 1 volumaison == -1 => -1 
+ cp1 == 1 volumaison == 0 ==>
+ 	recall : 1,1 et 0 ==> 1 #
+ 	recall : 1,0 ou 1,0 et 0 => 0 (if thése) 1 (if periodique) #
+ 	
+ 
+ checkpoint3 container
+ recall == cp2
+ if cp == 1, container == 1 =>1
+    cp2 == 1, container = -1 => -1
+    cp2 == 1 container == 0 ==>
+    
+ 	

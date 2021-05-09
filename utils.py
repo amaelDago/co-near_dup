@@ -9,7 +9,7 @@ from tqdm import tqdm
 import numpy as np
 import math
 from unicodedata import normalize
-from config import coef_dict, ratio
+from config import check_point_decision, ratio, coef_dict
 from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix
 
 class Notice : 
@@ -190,16 +190,15 @@ def check_page_range(x1, x2) :
                 x1 = x2
                 x2 = temp
 
-            same_sequence = same_begin_sequence(x1,x2)
-            x11 = x1[len(same_sequence):]
-            x22 = x2[len(same_sequence):]
-            print((x11, x22))
+            same_sequence_at_begining = same_begin_sequence(x1,x2)
+            x11 = x1[len(same_sequence_at_begining):]
+            x22 = x2[len(same_sequence_at_begining):]
 
             diff = len(x11) - len(x22)
-            begin = same_sequence[:diff]
+            begin = same_sequence_at_begining[:diff]
 
-            if x11.endswith(x22) and same_sequence.startswith(begin)\
-                and 2*len(same_sequence) == len(x1): 
+            if x11.endswith(x22) and same_sequence_at_begining.startswith(begin)\
+                and 2*len(same_sequence_at_begining) == len(x1): 
                 return 1
             else :
                 return -1 
@@ -250,24 +249,10 @@ def compare_publi_date(pd1, pd2, coef = 1) :
         else : 
             return [0.9*coef, -1]
 
-def compare_page_range(page_range1, page_range2) : 
-
-    # if not isinstance(page_range1, str) or isinstance(page_range2, str) : 
-    #     return [0.1*coef, 1]
-    # elif page_range1 == "np" or page_range2 == "np" : 
-    #     return [0.1*coef, 1]
-    # else :  
+def compare_page_range(page_range1, page_range2) :  
     return check_page_range(page_range1, page_range2)
 
 def compare_issue(issue1, issue2) : 
-
-    #if isinstance(issue1, float) or isinstance(issue2 float) : 
-    #    return 0
-    #else :  
-    #    if str(notice1["issue"]).lower().strip()==str(notice2["issue"]).lower().strip() : 
-    #        return 1    
-    #    else : 
-    #        return -1
     return check(issue1, issue2)
 
 def compare_source(source1, source2, coef = 1) : 
@@ -280,14 +265,14 @@ def compare_source(source1, source2, coef = 1) :
             return source1, source2, [0.9*coef,-1]
 
 
-def compare_meeting(meeting1, meeting2, coef = 1) : 
-    return check(meeting1, meeting2, coef) 
+def compare_meeting(meeting1, meeting2) : 
+    return check(meeting1, meeting2) 
 
 def compare_doc_type(doc_type1, doc_type2) : 
     return check(doc_type1, doc_type2)
 
-def compare_issn(issn1, issn2, coef = 1) : 
-    return check(issn1, issn2, coef)
+def compare_issn(issn1, issn2) : 
+    return check(issn1, issn2)
 
 def compare_eissn(eissn1, eissn2, coef = 1) : 
     return check(eissn1, eissn2, coef)
@@ -347,18 +332,14 @@ def compare_settlement(settlement1,settlement2) :
 
 def compare_default_title(td1, td2, threshold = .2) : 
 
-    dist = sentenceDistance(str(td1), str(td2))
+    dist = sentence_distance(str(td1), str(td2))
     if dist > threshold : 
-        return [0.9, -1]
+        return -1
     else : 
-        return [0.9, 1] 
+        return 1 
 
 
 #####################################
-
-# Compute matching function
-#n1 = Notice(notice1)
-#n2 = Notice(notice2)
 
 
 def compare_notice(n1, n2, coef_dict = coef_dict, threshold = 0.2) : 
@@ -388,55 +369,25 @@ def compare_notice(n1, n2, coef_dict = coef_dict, threshold = 0.2) :
         dico["eissn"] = compare_eissn(n1.eissn, n2.eissn, coef_dict["eissn"])
         
         # eissn
-        dico["issn"] = compare_issn(n1.issn, n2.issn, coef_dict["issn"])
+        dico["issn"] = compare_issn(n1.issn, n2.issn)
 
         # settlement
-        dico["settlement"] = compare_settlement(n1.settlement, n2.settlement,coef_dict["settlement"])
+        dico["settlement"] = compare_settlement(n1.settlement, n2.settlement)
 
         # meeting
-        dico["meeting"] = compare_meeting(n1.meeting, n2.meeting, coef_dict["meeting"])
+        dico["meeting"] = compare_meeting(n1.meeting, n2.meeting)
 
         # issue
-        dico["issue"] = compare_issue(n1.issue, n2.issue, coef_dict["issue"])
+        dico["issue"] = compare_issue(n1.issue, n2.issue)
 
         # volume
-        dico["volume"] = compare_volume(n1.volume, n2.volume, coef_dict["volume"])
+        dico["volume"] = compare_volume(n1.volume, n2.volume)
 
         # page_range
-        dico["page_range"] = compare_page_range(n1.page_range, n2.page_range, coef_dict["page_range"])
+        dico["page_range"] = compare_page_range(n1.page_range, n2.page_range)
 
     return dico
     
-    
-def get_validation(dico, ratio = ratio) : # publi_date
-    try : 
-
-        length = len(dico)
-        count_dup = 0
-        count_not_dup = 0
-        count_near_dup = 0
-        
-        for _, value in dico.items() :
-            if value == [0.9, 1] :
-                count_dup+=1
-
-            elif value == [0.1,1] : 
-                count_near_dup += 1 
-
-            else :  
-                count_not_dup += 1 
-            
-        if count_not_dup > 0 : 
-            return 0
-
-        elif count_near_dup >= int(length*ratio) : 
-            return 0
-
-        else : 
-            return 1
-
-    except : 
-        return 0 
 
 
 ###############################################
@@ -451,7 +402,7 @@ def get_notice_from_sourceUid(sourceUid, df):
     t_json = list(json.loads(t).values())[0]
     return t_json
 
-class NoticeComparison : 
+class RecordFileComparison : 
 
     def __init__(self, list_of_sourceUid1, list_of_sourceUid2, df, ratio) : 
         self.list_of_sourceUid1 = list_of_sourceUid1
@@ -461,14 +412,15 @@ class NoticeComparison :
         self.dataframe = []
         self.validation = []
 
-    def compare_notice(self) : 
+    def run(self) : 
         for x,y in zip(self.list_of_sourceUid1, self.list_of_sourceUid2) : 
-            temp1 = self.Record(get_notice_from_sourceUid(x, self.df))
-            temp2 = self.Record(get_notice_from_sourceUid(y, self.df))
-            dictionary = compare_notice(temp1, temp2)
-            result = get_validation(dictionary, self.ratio)
-            self.dataframe.append(result)
-            self.validation.append((x, y, result))
+            temp1 = get_notice_from_sourceUid(x, self.df)
+            temp2 = get_notice_from_sourceUid(y, self.df)
+            comparison = NoticeComparison(temp1, temp2)
+            res = comparison.decision()
+            #result = get_validation(temp, self.ratio)
+            self.dataframe.append(res)
+            self.validation.append((x, y, res))
 
     def is_done(self) : 
         if len(self.dataframe) == len(self.list_of_sourceUid1) : 
@@ -477,16 +429,25 @@ class NoticeComparison :
             return False
 
     def get_stats(self, y) :
+        n_corrects = []
+        n_ones = 0
         try :
-            if self.is_done() == True :  
-                prec = precision_score(y, self.dataframe)
-                recall = recall_score(y, self.dataframe)
-                f1 = f1_score(y, self.dataframe)
-                conf = confusion_matrix(y, self.dataframe)
-                return {"Precision": round(prec,3), 
-                        "Recall" : round(recall,3),
-                        "f1_score" : round(f1,3),
-                        "confusion_matrix" : conf
+            if self.is_done() == True : 
+                for x, y_ in zip(y, self.dataframe)  : 
+                    if x == 1 : 
+                        n_ones +=1
+                        if y_ == x : 
+                            n_corrects += 1 
+                prec = (n_ones,n_corrects)
+                print(n_corrects)
+                #prec = precision_score(y, self.dataframe)
+                recall = None#recall_score(y, self.dataframe)
+                f1 = None#f1_score(y, self.dataframe)
+                #conf = confusion_matrix(y, self.dataframe)
+                return {"Precision": prec,#round(prec,3), 
+                        #"Recall" : round(recall,3),
+                        #"f1_score" : round(f1,3),
+                        #"confusion_matrix" : conf
                 }
 
         except Exception as err : 
@@ -495,4 +456,259 @@ class NoticeComparison :
             
     class Record(Notice) : 
         pass
+
+
+#import json
+#from collections import Counter
+#from utils import check_page_range, check, compare_settlement, sentence_distance, Notice
+
+def is_id_valid(doi1, doi2, nnt1, nnt2, pmId1, pmId2) : 
+    """
+    check if notice is valid for identifier
+    """
+
+    if doi1 and doi2 : 
+        if doi1 == doi2 : 
+            return 1
+        return-1
+
+    
+    elif nnt1 and nnt2 : 
+        if nnt1 == nnt2 : 
+            return 1
+        return  -1
+
+
+    elif pmId1 and pmId2 : 
+        if pmId1 == pmId2 : 
+            return 1
+        return -1
+    
+    else : 
+        return 0
+
+
+
+def is_page_range_valid(page_range1,page_range2) : 
+    
+    if page_range1 and page_range2 : 
+        return check_page_range(page_range1, page_range2)
+
+    return 0  #, Coef
+
+
+
+def is_volumaison_valid(page_range1, page_range2, issue1, issue2, volume1, volume2) : 
+    
+    dictionary = {}
+    dictionary["page_range"] = check_page_range(page_range1, page_range2)
+    dictionary["issue"] = check_page_range(issue1, issue2)
+    dictionary["volume"] = check_page_range(volume1, volume2)
+
+    if dictionary["page_range"] == 1 : 
+
+        if dictionary["issue"] == 1 : 
+            return 1
         
+        elif dictionary["issue"] == -1 : 
+            return -1
+
+        elif dictionary["issue"] == 0 : 
+            return 0
+
+        elif dictionary['volume'] == 1 :
+            return 1
+
+        elif dictionary["volume"] == -1 : 
+            return -1
+
+        elif dictionary["volume"] == 0 : 
+            return 0
+
+    elif dictionary["page_range"] == -1 : # page range different ==> 
+        return -1
+
+    else : 
+        return 0
+
+def is_container_valid(eissn1, eissn2, issn1, issn2, \
+                       meeting1, meeting2, journal1, journal2,\
+                       settlement1, settlement2,eisbn1, eisbn2, isbn1, isbn2) : 
+    
+    container_dict = {}
+    container_dict["eissn"] = check(eissn1, eissn2)
+    container_dict["issn"] = check(issn1, issn2)
+    container_dict["meeting"] = check(meeting1, meeting2)
+    container_dict["journal"] = check(journal1, journal2)
+    container_dict["settlement"] = compare_settlement(settlement2, settlement2)
+    container_dict["isbn"] = check(isbn1, isbn2)
+    container_dict["eisbn"] = check(eisbn1, eisbn2)
+
+    if container_dict["settlement"] :
+        return container_dict["settlement"]
+        
+    elif container_dict["meeting"] : 
+        return container_dict["settlement"]
+
+    elif container_dict["issn"] : 
+        return container_dict["issn"]
+
+    elif container_dict['eissn'] : 
+        return container_dict["eissn"]
+
+    elif container_dict["journal"] :
+        return container_dict["journal"]
+
+    elif container_dict["isbn"] : 
+        return  container_dict["isbn"]
+
+    elif container_dict["eisbn"] : 
+        return container_dict["eisbn"]
+
+def checkpoint4() : 
+    pass
+
+def is_content_valid(default_title1,default_title2, threshold = 0.2) :
+    dist = sentence_distance(default_title1, default_title2)
+    if dist <= threshold : 
+        return 1
+    else : 
+        return -1 
+
+
+class NoticeComparison : 
+    def __init__(self, notice1, notice2) : 
+
+        self.n1 = self.Record(notice1)
+        self.n2 = self.Record(notice2)
+        self.validation_dict = {}
+        self.result = None
+        self.status = None
+        #self.decision_dict = {}
+
+    def is_id_valid(self):
+        self.validation_dict["id"] = is_id_valid(self.n1.doi, self.n2.doi,\
+                            self.n1.nnt, self.n2.nnt,\
+                            self.n1.pmId, self.n2.pmId
+                        )
+    
+    def is_page_range_valid(self) : 
+        #print('on', self.n1.page_range)
+        self.validation_dict["page_range"] = is_page_range_valid(self.n1.page_range, self.n2.page_range)
+
+
+    def checkpoint1(self) : 
+        try : 
+            tup = tuple(self.validation_dict.values())
+            res = check_point_decision[tup]
+            self.status = 1
+            if tup[0] or tup[-1] == -1 : 
+                self.result =  (-1, res)
+            else : 
+                self.result = (0, res)
+        except : 
+            pass
+
+    def checkpoint(self) : 
+        try : 
+            tup = tuple(self.validation_dict.values())
+            res = check_point_decision[tup]
+            self.status = 1
+            if tup[-1] == -1 : 
+                self.result =  (-1, res)
+            else : 
+                self.result = (0, res)
+        except : 
+            pass
+
+    def is_volumaison_valid(self) : 
+        self.validation_dict["volumaison"] = is_volumaison_valid(
+            self.n1.page_range, self.n2.page_range,
+            self.n1.issue, self.n2.issue, self.n1.volume, self.n2.volume
+        )
+
+    def is_container_valid(self) : 
+        self.validation_dict["container"] = is_container_valid(
+            self.n1.eissn, self.n2.eissn, self.n1.issn, self.n1.issn,
+            self.n1.meeting, self.n2.meeting, self.n1.journal, self.n2.journal,
+            self.n1.settlement, self.n2.settlement,
+            self.n1.eisbn, self.n2.eisbn, self.n1.isbn, self.n2.isbn 
+        )
+
+    def is_content_valid(self) : 
+        self.validation_dict["content"] = is_content_valid(
+            self.n1.default_title, self.n2.default_title
+        )
+
+    def last_checkpoint(self) : 
+        try : 
+            tup = tuple(self.validation_dict.values())
+            res = check_point_decision[tup]
+            if tup[-1] == 1 : 
+                self.result =  (1, res)
+            else : 
+                self.result = (-1, res)
+        except : 
+            pass
+
+    def run(self) : 
+        self.is_id_valid()
+        self.is_page_range_valid()
+        self.checkpoint1()
+        if self.status == 1 : 
+            return None
+
+        self.is_volumaison_valid()
+        self.checkpoint()
+        if self.status == 1 : 
+            return None
+
+        self.is_container_valid()
+        self.checkpoint()
+        if self.status == 1 : 
+            return None
+
+        self.is_content_valid()
+        self.last_checkpoint()
+
+    def is_done(self) : 
+        if self.status == "DONE" :
+            return 1
+   
+    class Record(Notice):
+        pass
+
+if __name__ == "__main__" :     
+
+    with open("example/test.json", "r") as f : 
+        test = json.load(f)
+
+    n1 = test[0]
+    n2 = n1.copy()
+    n2["doi"] = "autre_doi_inconnu" 
+
+    #print(notice2.doi)
+    comp = NoticeComparison(n1, n1)
+    comp.run()
+    print(comp.validation_dict)
+    print(11,comp.result)
+
+    print("########################")
+    comp = NoticeComparison(n1, n2)
+    comp.run()
+    print(comp.validation_dict)
+    print(11,comp.result)
+
+    print("########################")
+    n3 = n1.copy()
+    n1["pageRange"] = 777
+    n3["pageRange"] = 777
+    n3['issue'] = 1
+    n1['issue'] = 1
+    comp = NoticeComparison(n1, n3)
+    comp.run()
+    print(1,comp.validation_dict)
+    print(11,comp.result)
+
+    #print(is_volumaison_valid(47,47,None, None, 15,15))
+    #print(is_page_range_valid(47,47))
