@@ -3,8 +3,7 @@ import json
 import csv
 import pandas as pd
 from config import ratio
-from utils import get_notice_from_sourceUid
-from functions import NoticeComparison
+from utils import get_notice_from_sourceUid, RecordFileComparison
 
 
 with open("data/database/database.json", "r") as f : 
@@ -24,26 +23,31 @@ for file in files :
     j = 0
     print(f"Compute {file}")
     test = pd.read_csv(path + file, encoding = "utf8", sep = "\t")
-    for x,yy, z in zip(test.sourceUid1, test.sourceUid2, test["validation manuelle"]) : 
+    comp = RecordFileComparison(test.sourceUid1, test.sourceUid2, df, ratio)
+    comp.run()
+    data = comp.dataframe
+    print(data.shape)
+    print(data.head())
+    # for x,yy, z in zip(test.sourceUid1, test.sourceUid2, test["validation manuelle"]) : 
         
-        n1 = get_notice_from_sourceUid(x, df)
-        n2 = get_notice_from_sourceUid(yy, df)
-        comp = NoticeComparison(n1, n2)
-        comp.run()
-        try : 
-            res = comp.decision()
-            if z == 1 : 
-                n_ones +=1
+    #     n1 = get_notice_from_sourceUid(x, df)
+    #     n2 = get_notice_from_sourceUid(yy, df)
+    #     comp = NoticeComparison(n1, n2)
+    #     comp.run()
+    #     try : 
+    #         res = comp.decision()
+    #         if z == 1 : 
+    #             n_ones +=1
 
-                if z == res : 
-                    n_correct+=1
+    #             if z == res : 
+    #                 n_correct+=1
 
         
-        except : 
-            j +=1
-            print(comp.validation_dict)
-        print(n_correct/n_ones)
-        print(f"j{j}")
+    #     except : 
+    #         j +=1
+    #         print(comp.validation_dict)
+    #     print(n_correct/n_ones)
+    #     print(f"j{j}")
     #print(comp.validation)
     #comp
     # y_test = test['validation manuelle']

@@ -1,5 +1,6 @@
 import re
 import json
+import math
 import string
 import unidecode
 import base64
@@ -7,10 +8,10 @@ import itertools as it
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 import numpy as np
-import math
+import pandas as pd
 from unicodedata import normalize
 from config import check_point_decision, ratio, coef_dict
-from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix
+#from sklearn.metrics import precision_score, recall_score, f1_score, confusion_matrix
 
 class Notice : 
     def __init__(self, notice) : 
@@ -118,8 +119,6 @@ def sentence_distance(sentence1 , sentence2) :
     dist = levenshtein_distance(sentence1, sentence2)
     return dist/maxlen
 
-
-
 def check(x1, x2) : 
     """
     Allows to compare 2 objects : maybe string int bool list or tuple
@@ -207,7 +206,6 @@ def check_page_range(x1, x2) :
 #####################################
 # 2 We define needed functions
 #####################################
-
 def checkDoi(notice1, notice2, coef = 1) : 
 
     if isinstance(notice1["doi"], float) or isinstance(notice2["doi"], float) : 
@@ -275,20 +273,20 @@ def compare_issn(issn1, issn2) :
     return check(issn1, issn2)
 
 def compare_eissn(eissn1, eissn2, coef = 1) : 
-    return check(eissn1, eissn2, coef)
+    return check(eissn1, eissn2)
 
 def compare_journal(journal1, journal2, coef = 1) : 
-    return check(journal1, journal2, coef)
+    return check(journal1, journal2)
 
 
 def compare_nnt(nnt1, nnt2, coef = 1): 
-    return check(nnt1,nnt2, coef)
+    return check(nnt1,nnt2)
 
 def compare_ppn(ppn1, ppn2, coef = 1): 
-    return check(ppn1,ppn2, coef)
+    return check(ppn1,ppn2)
 
 def compare_volume(volume1, volume2, coef = 1): 
-    return check(volume1,volume2, coef)
+    return check(volume1,volume2)
 
 
 def compare_settlement(settlement1,settlement2) :
@@ -341,7 +339,6 @@ def compare_default_title(td1, td2, threshold = .2) :
 
 #####################################
 
-
 def compare_notice(n1, n2, coef_dict = coef_dict, threshold = 0.2) : 
 
     # Recuperer les champs utiles
@@ -355,10 +352,10 @@ def compare_notice(n1, n2, coef_dict = coef_dict, threshold = 0.2) :
     if n1.source == "sudoc" or n2.source == "sudoc": 
         
         # nnt
-        dico["nnt"] = compare_issue(n1.nnt, n2.nnt, coef_dict["nnt"])
+        dico["nnt"] = compare_issue(n1.nnt, n2.nnt)
         
         # publi_date
-        dico["publi_date"] = compare_publi_date(n1.publi_date, n2.publi_date, coef_dict['publi_date'])
+        dico["publi_date"] = compare_publi_date(n1.publi_date, n2.publi_date)
 
     
     else :
@@ -393,7 +390,6 @@ def compare_notice(n1, n2, coef_dict = coef_dict, threshold = 0.2) :
 ###############################################
 
 # Class for compute comparison
-
 def get_notice_from_sourceUid(sourceUid, df): 
     if not isinstance(sourceUid, str) : 
         sourceUid = str(sourceUid)
@@ -409,49 +405,59 @@ class RecordFileComparison :
         self.list_of_sourceUid2 = list_of_sourceUid2
         self.ratio = ratio
         self.df = df
-        self.dataframe = []
-        self.validation = []
+        self.dataframe = None
+        self.dictionary = []
 
     def run(self) : 
         for x,y in zip(self.list_of_sourceUid1, self.list_of_sourceUid2) : 
-            temp1 = get_notice_from_sourceUid(x, self.df)
-            temp2 = get_notice_from_sourceUid(y, self.df)
-            comparison = NoticeComparison(temp1, temp2)
-            res = comparison.decision()
-            #result = get_validation(temp, self.ratio)
-            self.dataframe.append(res)
-            self.validation.append((x, y, res))
+            try : 
+                temp1 = get_notice_from_sourceUid(x, self.df)
+                temp2 = get_notice_from_sourceUid(y, self.df)
+                comparison = NoticeComparison(temp1, temp2)
+                comparison.run()
+                result = comparison.result
+                dico = {"sourceUid1" : x, "sourceUid2" : y, "validation": result[0], "comment" : result[1]}
+            except : 
+                dico = {"sourceUid1" : x, "sourceUid2" : y, "validation" : 99, "comment" : "data not available"}
+            self.dictionary.append(dico)
+        self.dataframe  = pd.DataFrame(self.dictionary)
 
+
+    #get_notice_from_sourceUid
+
+    def get_dataframe(self) : 
+        pass 
+    
     def is_done(self) : 
         if len(self.dataframe) == len(self.list_of_sourceUid1) : 
             return True
         else : 
             return False
 
-    def get_stats(self, y) :
-        n_corrects = []
-        n_ones = 0
-        try :
-            if self.is_done() == True : 
-                for x, y_ in zip(y, self.dataframe)  : 
-                    if x == 1 : 
-                        n_ones +=1
-                        if y_ == x : 
-                            n_corrects += 1 
-                prec = (n_ones,n_corrects)
-                print(n_corrects)
-                #prec = precision_score(y, self.dataframe)
-                recall = None#recall_score(y, self.dataframe)
-                f1 = None#f1_score(y, self.dataframe)
-                #conf = confusion_matrix(y, self.dataframe)
-                return {"Precision": prec,#round(prec,3), 
-                        #"Recall" : round(recall,3),
-                        #"f1_score" : round(f1,3),
-                        #"confusion_matrix" : conf
-                }
+    # def get_stats(self, y) :
+    #     n_corrects = []
+    #     n_ones = 0
+    #     try :
+    #         if self.is_done() == True : 
+    #             for x, y_ in zip(y, self.dataframe)  : 
+    #                 if x == 1 : 
+    #                     n_ones +=1
+    #                     if y_ == x : 
+    #                         n_corrects += 1 
+    #             prec = (n_ones,n_corrects)
+    #             print(n_corrects)
+    #             #prec = precision_score(y, self.dataframe)
+    #             recall = None#recall_score(y, self.dataframe)
+    #             f1 = None#f1_score(y, self.dataframe)
+    #             #conf = confusion_matrix(y, self.dataframe)
+    #             return {"Precision": prec,#round(prec,3), 
+    #                     #"Recall" : round(recall,3),
+    #                     #"f1_score" : round(f1,3),
+    #                     #"confusion_matrix" : conf
+    #             }
 
-        except Exception as err : 
-            return err 
+    #     except Exception as err : 
+    #         return err 
 
             
     class Record(Notice) : 
@@ -468,21 +474,14 @@ def is_id_valid(doi1, doi2, nnt1, nnt2, pmId1, pmId2) :
     """
 
     if doi1 and doi2 : 
-        if doi1 == doi2 : 
-            return 1
-        return-1
-
+        return check(doi1, doi2)
     
     elif nnt1 and nnt2 : 
-        if nnt1 == nnt2 : 
-            return 1
-        return  -1
+        return check(nnt1, nnt2)
 
 
     elif pmId1 and pmId2 : 
-        if pmId1 == pmId2 : 
-            return 1
-        return -1
+        return check(pmId1, pmId2)
     
     else : 
         return 0
@@ -678,7 +677,7 @@ class NoticeComparison :
     class Record(Notice):
         pass
 
-if __name__ == "__main__" :     
+if __name__ == "__main__" :  
 
     with open("example/test.json", "r") as f : 
         test = json.load(f)
@@ -709,6 +708,3 @@ if __name__ == "__main__" :
     comp.run()
     print(1,comp.validation_dict)
     print(11,comp.result)
-
-    #print(is_volumaison_valid(47,47,None, None, 15,15))
-    #print(is_page_range_valid(47,47))

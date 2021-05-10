@@ -52,13 +52,13 @@ check_point_decision = {
     (1, 1, 1, -1) : "different publication information",
 
     # Add final parameters :  title
-    (0, 1, 0, 1, 1) : "duplicates !!!",
+    (0, 1, 0, 1, 1) : "duplicates",
     (0, 1, 0, 1, -1) : "not duplicates",
-    (0, 1, 1, 1, 1) : "duplicates !!!",
+    (0, 1, 1, 1, 1) : "duplicates",
     (0, 1, 1, 1, -1) : "not duplicates",
-    (1, 0, 1, 1, 1) : "duplicates !!!",
+    (1, 0, 1, 1, 1) : "duplicates",
     (1, 0, 1, 1, -1) : "not duplicates",
-    (1, 1, 1, 1, 1) : "duplicates !!!",
+    (1, 1, 1, 1, 1) : "duplicates",
     (1, 1, 1, 1, -1) : "not duplicates",
 }
 
