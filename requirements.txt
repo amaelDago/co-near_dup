@@ -5,3 +5,5 @@ scikit-learn
 pandas
 tqdm
 lxml
+json
+sklearn
