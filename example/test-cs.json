@@ -1,0 +1,174 @@
+[
+  {
+    "creationDate": "2020-12-15 16:09:07",
+    "language": [
+      "French"
+    ],
+    "publishingDirector": [],
+    "editor": [],
+    "classification": {
+      "hal": [
+        "Humanities and Social Sciences/History"
+      ],
+      "tef": [],
+      "dewey": [],
+      "thesisDomain": []
+    },
+    "keywords": {
+      "undetermined": {
+        "author": []
+      },
+      "en": {
+        "author": [],
+        "mesh": []
+      },
+      "fr": {
+        "author": [],
+        "mesh": [],
+        "rameau": []
+      }
+    },
+    "funders": [],
+    "thesisAdvisor": [],
+    "publisher": "Armand Colin",
+    "hasFulltext": false,
+    "title": {
+      "default": "« Terre et agriculture sous la Révolution et l’Empire »",
+      "fr": "",
+      "en": "« Terre et agriculture sous la Révolution et l’Empire »",
+      "monography": "",
+      "journal": "Annales historiques de la Révolution française",
+      "meeting": ""
+    },
+    "first3AuthorNames": "BRASSART Laurent Vivier Jean Pierre Jessenne, Peter M. Jones, Nadine",
+    "authorNames": "BRASSART Laurent Vivier Jean Pierre Jessenne, Peter M. Jones, Nadine",
+    "first3AuthorNamesWithInitials": "BRASSART L Vivier JPJPMJN",
+    "defenseOrganisms": [
+      {
+        "degreeGrantor": "",
+        "associatedLaboratory": "",
+        "associatedLaboratoryIdRef": "",
+        "degreeGrantorIdRef": "",
+        "doctoralSchool": "",
+        "doctoralSchoolIdRef": ""
+      }
+    ],
+    "authors": [
+      {
+        "forename": "Laurent",
+        "isni": [],
+        "surname": "BRASSART",
+        "researcherId": "",
+        "halAuthorId": "11125249",
+        "affiliations": [
+          {
+            "ref": "struct-3182",
+            "address": "UMR8529, Centre National de la Recherche Scientifique CNRS, Université de Lille, Institut de Recherches Historiques du Septentrion (IRHiS) - UMR 8529 IRHiS, Bâtiment A Niveau - 1 Rue du Barreau BP 60 149 59653 Villeneuve d'Ascq Cedex, FR",
+            "isni": [
+              "0000000123250166",
+              "0000000122597504"
+            ],
+            "idRef": [
+              "114347603",
+              "02636817X",
+              "223446556"
+            ],
+            "rnsr": [
+              "199812857N"
+            ]
+          }
+        ],
+        "orcId": [],
+        "idHal": "20573",
+        "idRef": [],
+        "viaf": []
+      },
+      {
+        "forename": "Jean Pierre Jessenne, Peter M. Jones, Nadine",
+        "isni": [],
+        "surname": "Vivier",
+        "researcherId": "",
+        "halAuthorId": "11128168",
+        "affiliations": [],
+        "orcId": [],
+        "idHal": "",
+        "idRef": [],
+        "viaf": []
+      }
+    ],
+    "issn": [
+      "0003-4436"
+    ],
+    "eissn": [
+      "1952-403X"
+    ],
+    "xissn": [
+      "0003-4436",
+      "1952-403X"
+    ],
+    "isbn": [],
+    "doi": "10.4000",
+    "hasDoi": true,
+    "issue": "p. 145-155.",
+    "volume": "382  ",
+    "halId": "hal-01708398",
+    "idHal": "20573",
+    "halAuthorId": [
+      "11125249",
+      "11128168"
+    ],
+    "orcId": [],
+    "researcherId": [],
+    "viaf": [],
+    "publicationDate": "2015",
+    "xPublicationDate": [
+      "2015"
+    ],
+    "abstract": {
+      "en": "",
+      "fr": ""
+    },
+    "documentType": [
+      "ART"
+    ],
+    "isni": [],
+    "rnsr": [
+      "199812857N"
+    ],
+    "source": "hal",
+    "typeConditor": "Article",
+    "idConditor": "SAm21qLYdAdomMDOx9bMPvE8e",
+    "sourceId": "hal-01708398",
+    "sourceUid": "hal$hal-01708398",
+    "sessionName": "HAL_2020-12-15_2015",
+    "isDeduplicable": true,
+    "idChain": "hal:SAm21qLYdAdomMDOx9bMPvE8e!",
+    "duplicates": [],
+    "isDuplicate": false,
+    "teiBlob": "PD94bWwgdmVyc2lvbj0iMS4wIj8+CjxURUkgeG1sbnM9Imh0dHA6Ly93d3cudGVpLWMub3JnL25zLzEuMCIgeG1sbnM6eHNpPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxL1hNTFNjaGVtYS1pbnN0YW5jZSI+CiAgPHRleHQ+CiAgICA8Ym9keT4KICAgICAgPGxpc3RCaWJsPgogICAgICAgIDxiaWJsRnVsbD4KICAgICAgICAgIDx0aXRsZVN0bXQ+CiAgICAgICAgICAgIDx0aXRsZSB4bWw6bGFuZz0iZW4iPsKrIFRlcnJlIGV0IGFncmljdWx0dXJlIHNvdXMgbGEgUsOpdm9sdXRpb24gZXQgbOKAmUVtcGlyZSDCuzwvdGl0bGU+CiAgICAgICAgICA8L3RpdGxlU3RtdD4KICAgICAgICAgIDxlZGl0aW9uU3RtdD4KICAgICAgICAgICAgPGVkaXRpb24gbj0idjEuMC4wIj4KICAgICAgICAgICAgICA8ZGF0ZSB0eXBlPSJ3aGVuRG93bmxvYWRlZCI+MjAyMC0wOS0yOVQxODo0ODo0MyswMjowMDwvZGF0ZT4KICAgICAgICAgICAgICA8ZGF0ZSB0eXBlPSJ3aGVuQ3JlYXRlZCI+MjAyMC0xMi0xNVQxNjo1NToxMCswMTowMDwvZGF0ZT4KICAgICAgICAgICAgPC9lZGl0aW9uPgogICAgICAgICAgICA8cmVzcFN0bXQ+CiAgICAgICAgICAgICAgPHJlc3A+R2VuZXJhdGVkIGJ5IFRFSS1Db25kaXRvciBYU0xUIChodHRwczovL2dpdGh1Yi5jb20vY29uZGl0b3IvdGVpLWNvbmRpdG9yKSwgZnJvbSBvcmlnaW5hbCBIQUwgZG9jdW1lbnQgaGFsLTAxNzA4Mzk4ICh2ZXJzaW9uICJ2MSIsIHR5cGUgImN1cnJlbnQiKTwvcmVzcD4KICAgICAgICAgICAgICA8bmFtZT5Db25kaXRvcjwvbmFtZT4KICAgICAgICAgICAgPC9yZXNwU3RtdD4KICAgICAgICAgIDwvZWRpdGlvblN0bXQ+CiAgICAgICAgICA8cHVibGljYXRpb25TdG10PgogICAgICAgICAgICA8ZGlzdHJpYnV0b3I+Q29uZGl0b3I8L2Rpc3RyaWJ1dG9yPgogICAgICAgICAgPC9wdWJsaWNhdGlvblN0bXQ+CiAgICAgICAgICA8bm90ZXNTdG10PgogICAgICAgICAgICA8bm90ZSB0eXBlPSJhdWRpZW5jZSIgbj0iMiI+YXVkaWVuY2UgOiBuYXRpb25hbDwvbm90ZT4KICAgICAgICAgICAgPG5vdGUgdHlwZT0icG9wdWxhciIgbj0iMCI+cG9wdWxhciBsZXZlbCA6IG5vPC9ub3RlPgogICAgICAgICAgICA8bm90ZSB0eXBlPSJwZWVyIiBuPSIxIj5wZWVyIHJldmlld2luZyA6IHllczwvbm90ZT4KICAgICAgICAgIDwvbm90ZXNTdG10PgogICAgICAgICAgPHNvdXJjZURlc2M+CiAgICAgICAgICAgIDxiaWJsU3RydWN0PgogICAgICAgICAgICAgIDxhbmFseXRpYz4KICAgICAgICAgICAgICAgIDx0aXRsZSB4bWw6bGFuZz0iZW4iPsKrIFRlcnJlIGV0IGFncmljdWx0dXJlIHNvdXMgbGEgUsOpdm9sdXRpb24gZXQgbOKAmUVtcGlyZSDCuzwvdGl0bGU+CiAgICAgICAgICAgICAgICA8YXV0aG9yIHJvbGU9ImF1dCI+CiAgICAgICAgICAgICAgICAgIDxwZXJzTmFtZT4KICAgICAgICAgICAgICAgICAgICA8Zm9yZW5hbWU+TGF1cmVudDwvZm9yZW5hbWU+CiAgICAgICAgICAgICAgICAgICAgPHN1cm5hbWU+QlJBU1NBUlQ8L3N1cm5hbWU+CiAgICAgICAgICAgICAgICAgIDwvcGVyc05hbWU+CiAgICAgICAgICAgICAgICAgIDxlbWFpbCB0eXBlPSJtZDUiPjJmNmM0OWMwYThkZjI1YmU3ZjY5OTJhYmExOWU5YzM3PC9lbWFpbD4KICAgICAgICAgICAgICAgICAgPGVtYWlsIHR5cGU9ImRvbWFpbiI+dW5pdi1saWxsZTMuZnI8L2VtYWlsPgogICAgICAgICAgICAgICAgICA8YWZmaWxpYXRpb24gbj0ic3RydWN0LTMxODIiPlVNUjg1MjksIENlbnRyZSBOYXRpb25hbCBkZSBsYSBSZWNoZXJjaGUgU2NpZW50aWZpcXVlIENOUlMsIFVuaXZlcnNpdMOpIGRlIExpbGxlLCBJbnN0aXR1dCBkZSBSZWNoZXJjaGVzIEhpc3RvcmlxdWVzIGR1IFNlcHRlbnRyaW9uIChJUkhpUykgLSBVTVIgODUyOSBJUkhpUywgQsOidGltZW50IEEgTml2ZWF1IC0gMSBSdWUgZHUgQmFycmVhdSBCUCA2MCAxNDkgNTk2NTMgVmlsbGVuZXV2ZSBkJ0FzY3EgQ2VkZXgsIEZSPG9yZyB0eXBlPSJsYWJvcmF0b3J5IiBzdGF0dXM9IlZBTElEIj48b3JnTmFtZT5JbnN0aXR1dCBkZSBSZWNoZXJjaGVzIEhpc3RvcmlxdWVzIGR1IFNlcHRlbnRyaW9uIChJUkhpUykgLSBVTVIgODUyOTwvb3JnTmFtZT48b3JnTmFtZSB0eXBlPSJhY3JvbnltIj5JUkhpUzwvb3JnTmFtZT48bmFtZSB0eXBlPSJjb2RlIj5VTVI4NTI5PC9uYW1lPjxkZXNjPjxhZGRyZXNzPjxhZGRyTGluZT5Cw6J0aW1lbnQgQSBOaXZlYXUgLSAxIFJ1ZSBkdSBCYXJyZWF1IEJQIDYwIDE0OSA1OTY1MyBWaWxsZW5ldXZlIGQnQXNjcSBDZWRleDwvYWRkckxpbmU+PGNvdW50cnkga2V5PSJGUiIvPjwvYWRkcmVzcz48L2Rlc2M+PGlkbm8gdHlwZT0iaGFsU3RydWN0dXJlSWQiPnN0cnVjdC0zMTgyPC9pZG5vPjxpZG5vIHR5cGU9ImlkUmVmIj4xMTQzNDc2MDM8L2lkbm8+PGlkbm8gdHlwZT0iaXNuaSI+MDAwMDAwMDEyMzI1MDE2NjwvaWRubz48aWRubyB0eXBlPSJybnNyIj4xOTk4MTI4NTdOPC9pZG5vPjxvcmcgdHlwZT0iaW5zdGl0dXRpb24iIHN0YXR1cz0iVkFMSUQiPjxvcmdOYW1lPkNlbnRyZSBOYXRpb25hbCBkZSBsYSBSZWNoZXJjaGUgU2NpZW50aWZpcXVlPC9vcmdOYW1lPjxvcmdOYW1lIHR5cGU9ImFjcm9ueW0iPkNOUlM8L29yZ05hbWU+PGlkbm8gdHlwZT0iaGFsU3RydWN0dXJlSWQiPnN0cnVjdC00NDE1Njk8L2lkbm8+PGlkbm8gdHlwZT0iaXNuaSI+MDAwMDAwMDEyMjU5NzUwNDwvaWRubz48aWRubyB0eXBlPSJpZFJlZiI+MDI2MzY4MTdYPC9pZG5vPjxkYXRlIHR5cGU9InN0YXJ0Ij4xOTM5LTEwLTE5PC9kYXRlPjwvb3JnPjxvcmcgdHlwZT0iaW5zdGl0dXRpb24iIHN0YXR1cz0iVkFMSUQiPjxvcmdOYW1lPlVuaXZlcnNpdMOpIGRlIExpbGxlPC9vcmdOYW1lPjxpZG5vIHR5cGU9ImhhbFN0cnVjdHVyZUlkIj5zdHJ1Y3QtMzc0NTcwPC9pZG5vPjxpZG5vIHR5cGU9ImlkUmVmIj4yMjM0NDY1NTY8L2lkbm8+PGRhdGUgdHlwZT0ic3RhcnQiPjIwMTgtMDEtMDE8L2RhdGU+PC9vcmc+PC9vcmc+PC9hZmZpbGlhdGlvbj4KICAgICAgICAgICAgICAgICAgPGlkbm8gdHlwZT0iaWRoYWwiIG5vdGF0aW9uPSJzdHJpbmciPmxhdXJlbnQtYnJhc3NhcnQ8L2lkbm8+CiAgICAgICAgICAgICAgICAgIDxpZG5vIHR5cGU9ImlkaGFsIiBub3RhdGlvbj0ibnVtZXJpYyI+MjA1NzM8L2lkbm8+CiAgICAgICAgICAgICAgICAgIDxpZG5vIHR5cGU9ImhhbEF1dGhvcklkIj4xMTEyNTI0OTwvaWRubz4KICAgICAgICAgICAgICAgIDwvYXV0aG9yPgogICAgICAgICAgICAgICAgPGF1dGhvciByb2xlPSJhdXQiPgogICAgICAgICAgICAgICAgICA8cGVyc05hbWU+CiAgICAgICAgICAgICAgICAgICAgPGZvcmVuYW1lPkplYW4gUGllcnJlIEplc3Nlbm5lLCBQZXRlciBNLiBKb25lcywgTmFkaW5lPC9mb3JlbmFtZT4KICAgICAgICAgICAgICAgICAgICA8c3VybmFtZT5WaXZpZXI8L3N1cm5hbWU+CiAgICAgICAgICAgICAgICAgIDwvcGVyc05hbWU+CiAgICAgICAgICAgICAgICAgIDxpZG5vIHR5cGU9ImhhbEF1dGhvcklkIj4xMTEyODE2ODwvaWRubz4KICAgICAgICAgICAgICAgIDwvYXV0aG9yPgogICAgICAgICAgICAgIDwvYW5hbHl0aWM+CiAgICAgICAgICAgICAgPG1vbm9ncj4KICAgICAgICAgICAgICAgIDxpZG5vIHR5cGU9Imlzc24iPjAwMDMtNDQzNjwvaWRubz4KICAgICAgICAgICAgICAgIDxpZG5vIHR5cGU9ImVpc3NuIj4xOTUyLTQwM1g8L2lkbm8+CiAgICAgICAgICAgICAgICA8dGl0bGUgbGV2ZWw9ImoiPkFubmFsZXMgaGlzdG9yaXF1ZXMgZGUgbGEgUsOpdm9sdXRpb24gZnJhbsOnYWlzZTwvdGl0bGU+CiAgICAgICAgICAgICAgICA8aW1wcmludD4KICAgICAgICAgICAgICAgICAgPHB1Ymxpc2hlcj5Bcm1hbmQgQ29saW48L3B1Ymxpc2hlcj4KICAgICAgICAgICAgICAgICAgPGJpYmxTY29wZSB1bml0PSJ2b2x1bWUiPjM4MiAgPC9iaWJsU2NvcGU+CiAgICAgICAgICAgICAgICAgIDxiaWJsU2NvcGUgdW5pdD0iaXNzdWUiPnAuIDE0NS0xNTUuPC9iaWJsU2NvcGU+CiAgICAgICAgICAgICAgICAgIDxkYXRlIHR5cGU9ImRhdGVQdWIiPjIwMTU8L2RhdGU+CiAgICAgICAgICAgICAgICA8L2ltcHJpbnQ+CiAgICAgICAgICAgICAgPC9tb25vZ3I+CiAgICAgICAgICAgICAgPGlkbm8gdHlwZT0iaGFsSWQiPmhhbC0wMTcwODM5ODwvaWRubz4KICAgICAgICAgICAgICA8aWRubyB0eXBlPSJkb2kiPjEwLjQwMDA8L2lkbm8+CiAgICAgICAgICAgIDwvYmlibFN0cnVjdD4KICAgICAgICAgIDwvc291cmNlRGVzYz4KICAgICAgICAgIDxwcm9maWxlRGVzYz4KICAgICAgICAgICAgPGxhbmdVc2FnZT4KICAgICAgICAgICAgICA8bGFuZ3VhZ2UgaWRlbnQ9ImZyIj5GcmVuY2g8L2xhbmd1YWdlPgogICAgICAgICAgICA8L2xhbmdVc2FnZT4KICAgICAgICAgICAgPHRleHRDbGFzcz4KICAgICAgICAgICAgICA8Y2xhc3NDb2RlIHNjaGVtZT0iaGFsRG9tYWluIiBuPSJzaHMuaGlzdCI+SHVtYW5pdGllcyBhbmQgU29jaWFsIFNjaWVuY2VzL0hpc3Rvcnk8L2NsYXNzQ29kZT4KICAgICAgICAgICAgICA8Y2xhc3NDb2RlIHNjaGVtZT0idHlwb2xvZ3kiIG49IkFSVCI+QVJUPC9jbGFzc0NvZGU+CiAgICAgICAgICAgIDwvdGV4dENsYXNzPgogICAgICAgICAgPC9wcm9maWxlRGVzYz4KICAgICAgICA8L2JpYmxGdWxsPgogICAgICA8L2xpc3RCaWJsPgogICAgPC9ib2R5PgogIDwvdGV4dD4KPC9URUk+Cg==",
+    "enrichments": {
+      "classifications": {
+        "scopus": [
+          [
+            {
+              "level": 1,
+              "value": "Social Sciences"
+            },
+            {
+              "level": 2,
+              "value": "Arts and Humanities"
+            },
+            {
+              "level": 3,
+              "value": "History"
+            }
+          ]
+        ]
+      }
+    },
+    "isNearDuplicate": false,
+    "nearDuplicatesDetectedBySimilarity": [],
+    "nearDuplicates": [],
+    "_score": 12.713101
+  }
+]

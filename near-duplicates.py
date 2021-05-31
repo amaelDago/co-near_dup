@@ -1,30 +1,46 @@
-import os
-import json
 import pandas as pd
-from config import ratio
-from utils import NoticeComparison
+import json
+from tqdm import tqdm
+import argparse
+from utils import NoticeComparison, RecordFileComparison
 
-with open("data/database/database.json", "r") as f : 
+
+# Argument Parser
+parser = argparse.ArgumentParser(description="near Duplicates validation" )
+parser.add_argument("--filepath", help = "File to get near duplicates validation. Must be a csv files")
+parser.add_argument('--separator', help = "separator", default = ",")
+parser.add_argument('--record-database', help = "Records database. May be jsonfile coming from Conditor API ")
+args = parser.parse_args()
+
+df = pd.read_csv(args.filepath, sep= args.separator)
+
+sl1 = df.sourceUid1
+sl2 = df.sourceUid2
+y = list(df["validation manuelle"])
+
+
+with open(args.record_database, "r") as f : 
     db = json.load(f)
 
-df = pd.DataFrame(db.values())
-stats = []
+print("Data importation...")
+indexor = {}
+d = []
+for notice in db : 
+    sourceUid = notice["sourceUid"]
+    indexor[sourceUid] = notice
+    nearDuplicate = notice["nearDuplicates"]
+    try : 
+        l = list(map(lambda y : y["sourceUid"], nearDuplicate))
+        for x in l : 
+            d.append((sourceUid, x))
+    except  : 
+        pass
+print("Compute near duplicate validation")
+comp = RecordFileComparison(sl1, sl2, indexor, threshold=0.2) 
+comp.run()
+print(comp.get_stats(y)['report'], sep = '\n')
+print(comp.dataframe.head())
+print(comp.dataframe[["validation","comment"]].groupby("validation").count())
 
 
-path = "data/test-data/"
-files = os.listdir(path)
-#for ratio in range(0, 11): 
-    #ratio = ratio/10
-for file in files : 
-    print(f"Compute {file}")
-    test = pd.read_csv(path + file, encoding = "utf8", sep = "\t")
-
-    comp = NoticeComparison(test.sourceUid1, test.sourceUid2, df, ratio)
-    comp.compare_notice()
-    y_test = test['validation manuelle']
-    stats.append(comp.get_stats(y_test))
-    #print(stats)
-
-dd = pd.DataFrame(stats)
-print(dd.head())
-dd.to_csv('resultats.tsv', sep = "\t")
+comp.dataframe.to_csv('resultat.tsv', sep = "\t")
